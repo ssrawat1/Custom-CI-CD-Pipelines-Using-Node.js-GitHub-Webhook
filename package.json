@@ -1,0 +1,19 @@
+{
+  "name": "custome-ci-cd-server",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "node tempTesting.js",
+    "start": "node --watch --no-deprecation --env-file=.env server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "nodemailer": "^7.0.11"
+  }
+}
