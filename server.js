@@ -4,7 +4,7 @@ import handleGitHubWebhookRoute from './githubWebhookRoute.js';
 
 const app = express();
 
-const PORT = process.env.PORT;
+const PORT = 80 || process.env.PORT;
 
 app.use(express.json())
 
