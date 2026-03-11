@@ -10,7 +10,7 @@ app.use(express.json())
 
 
 app.get('/', (req, res) => {
-   const baseUrl = process.env.BASE_URL || 'http://localhost:' + PORT;
+   const baseUrl = process.env.BASE_URL || 'https://cicd.safemystuff.store';
   const webhookUrl = `${baseUrl}/github/webhook`;
   const now = new Date().toLocaleString();
 
