@@ -10,152 +10,173 @@ app.use(express.json())
 
 
 app.get('/', (req, res) => {
-   const baseUrl = process.env.BASE_URL || 'https://cicd.safemystuff.store';
+  const baseUrl = process.env.BASE_URL || 'https://cicd.safemystuff.store';
   const webhookUrl = `${baseUrl}/github/webhook`;
   const now = new Date().toLocaleString();
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.send(`<!doctype html>
-  <html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>Safemystuff CI/CD</title>
-  </head>
-  <body style="margin:0;padding:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);display:flex;align-items:center;justify-content:center;height:100vh;">
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Safemystuff CI/CD</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      max-width: 480px;
+      width: 100%;
+      overflow: hidden;
+    }
+    .card-top {
+      background: #1a1d23;
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .icon-wrap {
+      width: 48px; height: 48px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .title-block h1 { font-size: 18px; font-weight: 700; color: #fff; }
+    .title-block p  { font-size: 12px; color: #6b7280; margin-top: 3px; }
+    .status-pill {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(34,197,94,0.12);
+      border: 1px solid rgba(34,197,94,0.25);
+      color: #22c55e;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .pulse {
+      width: 7px; height: 7px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #22c55e;
+      animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .card-body { padding: 24px 28px 28px; }
+    .desc { font-size: 13px; color: #6b7280; line-height: 1.6; margin-bottom: 20px; }
+    .section-label {
+      font-size: 11px; font-weight: 700; color: #9ca3af;
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+    }
+    .webhook-row { display: flex; gap: 8px; margin-bottom: 20px; }
+    .webhook-url {
+      flex: 1;
+      font-family: 'Menlo', 'Monaco', monospace;
+      font-size: 12px; color: #374151;
+      background: #f9fafb; border: 1px solid #e5e7eb;
+      padding: 10px 12px; border-radius: 8px;
+      word-break: break-all; line-height: 1.5;
+    }
+    .copy-btn {
+      background: #1a1d23; color: #fff; border: none;
+      padding: 0 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .copy-btn:hover { background: #2d3139; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .info-tile {
+      background: #f9fafb; border: 1px solid #e5e7eb;
+      border-radius: 10px; padding: 12px 14px;
+    }
+    .info-tile .lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #9ca3af; margin-bottom: 5px; }
+    .info-tile .val { font-size: 15px; font-weight: 700; color: #111827; }
+    .info-tile .val.green { color: #16a34a; }
+    .footer {
+      font-size: 11.5px; border-top: 1px solid #f3f4f6;
+      padding-top: 16px; display: flex;
+      justify-content: space-between;
+    }
+    .footer span { color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <div class="card">
 
-    <div style="
-      background:#ffffff;
-      padding:40px 32px;
-      border-radius:16px;
-      box-shadow:0 20px 60px rgba(20,30,50,0.15);
-      text-align:center;
-      max-width:500px;
-      width:92%;
-      color:#333;
-    ">
-
-     <!-- CI/CD Icon -->
-      <div style="margin:0 auto 16px;width:80px;height:80px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);border-radius:16px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" aria-hidden="true">
-          <path d="M9 3H5a2 2 0 0 0-2 2v4m0 0a9 9 0 0 0 18 0m0 0V5a2 2 0 0 0-2-2h-4m0 0a9 9 0 0 0-18 0"/>
-          <circle cx="12" cy="12" r="1" fill="white"/>
-          <path d="M7 12h10M12 7v10"/>
+    <div class="card-top">
+      <div class="icon-wrap">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
         </svg>
       </div>
-
-      <!-- Title -->
-      <h1 style="margin:0;font-size:26px;color:#222;font-weight:700;">Safemystuff CI/CD</h1>
-
-      <!-- Status Badge -->
-      <div style="margin:16px 0 0 0;">
-        <span style="
-          display:inline-flex;
-          align-items:center;
-          gap:8px;
-          background:#e8f5e9;
-          color:#2e7d32;
-          padding:8px 14px;
-          border-radius:20px;
-          font-weight:600;
-          font-size:14px;
-        ">
-          <span style="width:10px;height:10px;background:#2e7d32;border-radius:50%;display:inline-block;box-shadow:0 0 8px #2e7d32;"></span>
-          Online
-        </span>
+      <div class="title-block">
+        <h1>Safemystuff CI/CD</h1>
+        <p>cicd.safemystuff.store</p>
       </div>
-
-      <!-- Description -->
-      <p style="margin:16px 0 0 0;font-size:14px;color:#555;line-height:1.6;">
-        Your webhook listener is running and ready to deploy automatically on every GitHub push.
-      </p>
-
-      <!-- Endpoint Card -->
-      <div style="
-        margin-top:24px;
-        background:#f8f9fb;
-        border:1px solid #e0e3ff;
-        border-radius:12px;
-        padding:16px;
-      ">
-        <div style="font-size:12px;color:#999;margin-bottom:8px;text-transform:uppercase;font-weight:600;letter-spacing:0.5px;">Webhook Endpoint</div>
-        <div style="display:flex;gap:10px;align-items:center;">
-          <div style="
-            flex:1;
-            font-family:'Monaco', 'Courier New', monospace;
-            font-size:13px;
-            color:#333;
-            background:#fff;
-            padding:10px 12px;
-            border-radius:8px;
-            word-break:break-all;
-            font-weight:500;
-            overflow:hidden;
-          ">
-            ${webhookUrl}
-          </div>
-          <button onclick="
-            navigator.clipboard.writeText('${webhookUrl}');
-            const btn = event.target;
-            const originalText = btn.textContent;
-            btn.textContent = '✓ Copied!';
-            btn.style.background = '#2e7d32';
-            setTimeout(() => {
-              btn.textContent = originalText;
-              btn.style.background = '#667eea';
-            }, 2000);
-          " style="
-            background:#667eea;
-            color:white;
-            border:none;
-            padding:10px 14px;
-            border-radius:8px;
-            font-weight:600;
-            font-size:13px;
-            cursor:pointer;
-            white-space:nowrap;
-            transition:all 0.2s;
-          " onmouseover="this.style.background='#5568d3'" onmouseout="this.style.background='#667eea'">
-            Copy
-          </button>
-        </div>
+      <div class="status-pill">
+        <div class="pulse"></div>
+        Online
       </div>
-
-      <!-- Info Grid -->
-      <div style="
-        margin-top:24px;
-        display:grid;
-        grid-template-columns:1fr 1fr;
-        gap:12px;
-      ">
-        <div style="
-          background:#f8f9fb;
-          border-radius:10px;
-          padding:12px;
-          border:1px solid #e0e3ff;
-        ">
-          <div style="font-size:11px;color:#999;text-transform:uppercase;font-weight:600;margin-bottom:6px;">Port</div>
-          <div style="font-size:16px;font-weight:700;color:#667eea;">${PORT}</div>
-        </div>
-        <div style="
-          background:#f8f9fb;
-          border-radius:10px;
-          padding:12px;
-          border:1px solid #e0e3ff;
-        ">
-          <div style="font-size:11px;color:#999;text-transform:uppercase;font-weight:600;margin-bottom:6px;">Status</div>
-          <div style="font-size:16px;font-weight:700;color:#2e7d32;">Running</div>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div style="margin-top:20px;font-size:12px;color:#999;line-height:1.6;">
-        Last refreshed: <b style="color:#666;">${now}</b>
-      </div>
-
     </div>
-  </body>
-  </html>`);
+
+    <div class="card-body">
+      <p class="desc">Webhook listener is running and ready to deploy automatically on every GitHub push.</p>
+
+      <div class="section-label">Webhook Endpoint</div>
+      <div class="webhook-row">
+        <div class="webhook-url">${webhookUrl}</div>
+        <button class="copy-btn" onclick="
+          navigator.clipboard.writeText('${webhookUrl}');
+          this.textContent = '✓ Copied';
+          setTimeout(() => this.textContent = 'Copy', 2000);
+        ">Copy</button>
+      </div>
+
+      <div class="section-label">Server Info</div>
+      <div class="info-grid">
+        <div class="info-tile">
+          <div class="lbl">Port</div>
+          <div class="val">${PORT}</div>
+        </div>
+        <div class="info-tile">
+          <div class="lbl">Status</div>
+          <div class="val green">Running</div>
+        </div>
+        <div class="info-tile">
+          <div class="lbl">Env</div>
+          <div class="val">${process.env.NODE_ENV || 'production'}</div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <span>Last refreshed: ${now}</span>
+        <span>Safemystuff &copy; ${new Date().getFullYear()}</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>`);
 });
 
 
