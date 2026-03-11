@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "test": "node tempTesting.js",
-    "start": "node --watch --no-deprecation --env-file=.env server.js"
+    "start": "node --no-deprecation --env-file=.env server.js"
   },
   "keywords": [],
   "author": "",
