@@ -179,10 +179,7 @@ app.get('/', (req, res) => {
 </html>`);
 });
 
-
 app.use('/github', handleGitHubWebhookRoute);
-
- 
 
 app.listen(PORT, () => {
   console.log(
